@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { Schema, Model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 const UserSchema = new Schema({
     userName: {
@@ -44,4 +44,4 @@ UserSchema.methods.comparePassword = function comparePassword(candidatePassword,
     })
 }
 
-export default Model('User', UserSchema)
+export default model('User', UserSchema)

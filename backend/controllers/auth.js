@@ -1,6 +1,6 @@
 import passport from 'passport'
 import validator from 'validator'
-import User from '../models/User'
+import User from '../models/User.js'
 
 export default {
     postLogin: (req,res) => {
@@ -18,14 +18,18 @@ export default {
         req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false })
         passport.authenticate('local', (err, user, info) => {
             if(err){
-                return next(err)
+                throw err
             }
             if(!user){
-                req.flash('errors', info)
-                return res.redirect('')
+                res.send('No user exists.')
             }
-            req.flash('success', { msg: 'Success! You are now logged in.'})
-            res.redirect(req.session.returnTo || '')
+            req.login(user, err => {
+                if(err){
+                    throw err
+                }
+                res.send('Successfully logged in!')
+                console.log(req.user)
+            })
         })
     },
     postSignup: async (req,res) => {

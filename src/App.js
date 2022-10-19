@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import axios from 'axios';
 import Header from './components/Header'
 import Login from './components/Login';
 import Footer from './components/Footer';
@@ -71,28 +72,26 @@ function App() {
 	}
 
   return (
-	<Router>
-		<div className="container">
-			<Header onClick={() => setShowAddTask(!showAddTask)} showAdd={showAddTask}/>
-			<Routes>
-				<Route path='/' element={<Login />} />
-				<Route path='/myTasks' 
-					element={ loading ? <h3>Loading...</h3> :
-						<>
-							{showAddTask && <AddTask onAdd={addTask}/>}
-							{tasks.length ? 
-								(<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/>) 
-								: ('Currently, you have no tasks to show.')
-							}
-						</>
-					} 
-				/>
-				<Route path='/about' element={<About />} />
-				<Route path='/task/:id' element={<TaskDetails />} />
-			</Routes>
-			< Footer />
-		</div>
-	</Router>
+	<div className="container">
+		<Header onClick={() => setShowAddTask(!showAddTask)} showAdd={showAddTask}/>
+		<Routes>
+			<Route path='/' element={<Login />} />
+			<Route path='/myTasks' 
+				element={ loading ? <h3>Loading...</h3> :
+					<>
+						{showAddTask && <AddTask onAdd={addTask}/>}
+						{tasks.length ? 
+							(<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/>) 
+							: ('Currently, you have no tasks to show.')
+						}
+					</>
+				} 
+			/>
+			<Route path='/about' element={<About />} />
+			<Route path='/task/:id' element={<TaskDetails />} />
+		</Routes>
+		< Footer />
+	</div>
   );
 }
 

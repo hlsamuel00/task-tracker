@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import Button from "./Button"
+import { signupUser, loginUser } from '../api-functions/functions'
 
 const Login = () => {
     const [ username, setUsername ] = useState('')
@@ -9,6 +10,13 @@ const Login = () => {
     const [ email, setEmail ] = useState('')
     const [ confirmEmail, setConfirmEmail ] = useState('')
     const [ loginDisplay, setLoginDisplay ] = useState(true)
+
+    const loginSubmit = () => {
+        loginUser({
+            username: username,
+            password: password
+        })
+    }
     
     return (
         <div className="login-container">
@@ -46,7 +54,7 @@ const Login = () => {
                                 onChange={(e) => console.log(e.target.value)}
                             />
                         </div>
-                        <input type='submit' value='Login to My Account' className="btn btn-block" />
+                        <input type='submit' onSubmit={loginSubmit} value='Login to My Account' className="btn btn-block" />
                         <Link to=''><p>Forgot my password</p></Link>
                     </form>
                 ) : (
