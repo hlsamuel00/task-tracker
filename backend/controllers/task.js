@@ -1,4 +1,3 @@
-import passport from "passport"
 import Task from '../models/Task.js'
 
 export default {

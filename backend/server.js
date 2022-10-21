@@ -1,36 +1,39 @@
 import express from 'express'
-import dotenv from 'dotenv'
+const app = express()
 import passport from 'passport'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 import passportConfig from './config/passport.js'
 import flash from 'flash'
 import logger from 'morgan'
 import session from 'express-session'
-import MongoStore from 'connect-mongo'
-import mongoose from 'mongoose'
+import connectMongo from 'connect-mongo'
+const MongoStore = connectMongo(session)
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import connectDB from './config/database.js'
 import authRoutes from './routes/auth.js'
 import taskRoutes from './routes/task.js'
+// End of Variable Assignments ================================================
 
-const app = express()
 
-// Logger configuration
-logger.token('body', (req) => JSON.stringify(req.body))
 
-// Dotenv Configuration
+// Dotenv middleware configuration
 dotenv.config({ path: './config/config.env' })
 
-// Passport Configuration
+// Passport middleware configuration
 passportConfig(passport)
 
 // Database Connection
 connectDB()
 
-// Middleware ===============
-// Body Parser Configuration
+// Body Parser middleware Configuration
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+
+// Logger middleware configuration
+logger.token('body', (req) => JSON.stringify(req.body))
+app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'))
 
 // Session middleware
 app.use(
@@ -38,7 +41,7 @@ app.use(
       secret: "astronaut unicorn princess",
       resave: false,
       saveUninitialized: false,
-      store: MongoStore.create({ client: mongoose.connection, collectionName: 'sessions' }),
+      store: new MongoStore({ mongooseConnection: mongoose.connection })
     })
 )
 
@@ -55,12 +58,18 @@ app.use(cookieParser('astronaut unicorn princess'))
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Flash Message Configuration
+// Flash Message middleware configuration
 app.use(flash())
+
+// End of Middleware Config ================================================
+
 
 // Route configuration
 app.use('/auth', authRoutes)
 app.use('/tasks', taskRoutes)
+
+// End of Route Config ================================================
+
 
 // Listener Configuration
 app.listen(process.env.PORT, () => {
