@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import { Schema, model } from 'mongoose'
 
 const UserSchema = new Schema({
-    userName: {
+    username: {
         type: String,
         required: true,
         unique: true
@@ -23,7 +23,7 @@ UserSchema.pre('save', function save(next){
     if(!user.isModified('password')){
         return next()
     }
-    bcrypt.genSalt(16, (err, salt) => {
+    bcrypt.genSalt(25, (err, salt) => {
         if(err){
             return next(err)
         }

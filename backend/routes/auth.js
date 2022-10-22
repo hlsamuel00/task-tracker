@@ -10,4 +10,9 @@ router.post('/login', authController.postLogin)
 // @route           POST /auth/signup
 router.post('/signup', authController.postSignup)
 
+// @description     Logout User
+// @route           POST /auth/logout
+router.post('/logout', authController.logoutUser)
+
+
 export default router

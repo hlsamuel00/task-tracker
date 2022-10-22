@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import Button from "./Button"
-import { signupUser, loginUser } from '../api-functions/functions'
+import  { signupUser, loginUser } from '../api-functions/functions'
 
 const Login = () => {
     const [ username, setUsername ] = useState('')
@@ -11,10 +11,24 @@ const Login = () => {
     const [ confirmEmail, setConfirmEmail ] = useState('')
     const [ loginDisplay, setLoginDisplay ] = useState(true)
 
-    const loginSubmit = () => {
+    const loginSubmit = (e) => {
+        e.preventDefault()
+
         loginUser({
             username: username,
             password: password
+        })
+    }
+
+    const signupSubmit = (e) => {
+        e.preventDefault()
+
+        signupUser({
+            username: username,
+            password: password,
+            email: email,
+            confirmPassword: confirmPassword,
+            confirmEmail: confirmEmail
         })
     }
     
@@ -35,14 +49,14 @@ const Login = () => {
             <div className="form-container">
 
                 { loginDisplay ? (
-                    <form className="login-form">
+                    <form className="login-form" onSubmit={loginSubmit}>
                         <div className="form-control">
                             <label>Username</label>
                             <input 
                                 type='text'
                                 placeholder='Enter username'
                                 value={username}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                         <div className="form-control">
@@ -51,21 +65,21 @@ const Login = () => {
                                 type='password'
                                 placeholder="Enter password"
                                 value={password}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                        <input type='submit' onSubmit={loginSubmit} value='Login to My Account' className="btn btn-block" />
+                        <input type='submit' value='Login to My Account' className="btn btn-block" />
                         <Link to=''><p>Forgot my password</p></Link>
                     </form>
                 ) : (
-                    <form className="login-form">
+                    <form className="login-form" onSubmit={signupSubmit}>
                         <div className="form-control">
                             <label>Username</label>
                             <input 
                                 type='text'
                                 placeholder='Enter username'
                                 value={username}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                         <div className="form-control">
@@ -74,7 +88,7 @@ const Login = () => {
                                 type='text'
                                 placeholder='Enter email address'
                                 value={email}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="form-control">
@@ -83,7 +97,7 @@ const Login = () => {
                                 type='text'
                                 placeholder='Re-enter email address'
                                 value={confirmEmail}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setConfirmEmail(e.target.value)}
                             />
                         </div>
                         <div className="form-control">
@@ -92,7 +106,7 @@ const Login = () => {
                                 type='password'
                                 placeholder="Enter password"
                                 value={password}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
                         <div className="form-control">
@@ -101,7 +115,7 @@ const Login = () => {
                                 type='password'
                                 placeholder="Re-enter password"
                                 value={confirmPassword}
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                         </div>
                         <input type='submit' value='Create New Account' className="btn btn-block" />

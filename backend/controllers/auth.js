@@ -5,30 +5,29 @@ import User from '../models/User.js'
 export default {
     postLogin: (req,res) => {
         const validationErrors = { success: [], errors: [] }
-        if(!validator.isEmail(req.body.email)){
-            validationErrors.errors.push( { msg: 'Please enter a valid email address.'})
+        if(req.user){
+            validationErrors.errors.push('User already logged in.')
         }
         if(validator.isEmpty(req.body.password)){
-            validationErrors.errors.push( { msg: 'Password cannot be blank.' })
+            validationErrors.errors.push( 'Password cannot be blank.')
         }
         if(validationErrors.errors.length){
-            res.status(500).send({ errors: validationErrors.errors })
+            return res.status(500).send({ errors: validationErrors.errors })
         }
 
-        req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false })
         passport.authenticate('local', (err, user, info) => {
             if(err){
-                throw err
+                return res.send(err)
             }
             if(!user){
-                res.send('No user exists.')
+                return res.send(info)
             }
             req.login(user, err => {
                 if(err){
-                    throw err
+                    return res.send(err)
                 }
-                res.send('Successfully logged in!')
                 console.log(req.user)
+                return res.status(200).send(user)
             })
         })
     },
@@ -52,9 +51,12 @@ export default {
         if(req.body.password !== req.body.confirmPassword){
             validationErrors.errors.push('Passwords do not match.')
         }
+        if(req.body.email !== req.body.confirmEmail){
+            validationErrors.errors.push('Email addresses provided do not match.')
+        }
         if(validationErrors.errors.length){
             console.log(validationErrors.errors)
-            res.status(500).send({ errors: validationErrors.errors })
+            return res.send({ errors: validationErrors.errors })
         }
         
         req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false })
@@ -69,23 +71,30 @@ export default {
             { $or: [{ email: req.body.email }, { username: req.body.username }]},
             (err,existingUser) => {
                 if(err){
-                    res.send({ errors: err.message })
+                    return res.send(err)
                 }
                 if(existingUser){
-                    res.send({ errors: "Account with that email address or username already exists." })
+                    console.log("Account with that email address or username already exists.")
+                    return res.send({ error: "Account with that email address or username already exists."})
                 }
                 user.save((error) => {
                     if(error){
-                        res.send({ errors: error })
+                        console.log(error)
+                        return res.send(error)
                     }
                     req.login(user, (error) => {
                         if(error){
-                            res.send({ errors: error })
+                            console.log(error)
+                            return res.send(error)
                         }
-                        res.status(200).send({ done: true })
+                        console.log('Account created!')
+                        return res.status(200).send(user)
                     })
                 })
             }
         )
+    },
+    logoutUser: (req,res) => {
+
     }
 }

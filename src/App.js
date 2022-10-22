@@ -24,7 +24,7 @@ function App() {
 
 	//Fetch Tasks
 	const fetchTasks = async () => {
-		const res = await fetch('http://localhost:8000/tasks')
+		const res = await fetch('http://localhost:8005/tasks')
 		const data = await res.json()
 		return data
 	}

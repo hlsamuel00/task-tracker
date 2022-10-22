@@ -1,20 +1,26 @@
-import axios from "axios";
+import axios from "axios"
 
-export default {
-    signupUser: ({ username, password, email }) => {
+export const signupUser = ({ username, password, email, confirmPassword, confirmEmail }) => {
         axios({
             method: 'POST',
             data: {
                 username: username,
                 password: password,
-                email: email
+                email: email,
+                confirmPassword: confirmPassword,
+                confirmEmail: confirmEmail
             },
             withCredentials: true,
-            url: 'http://localhost:3005/signup'
+            url: 'http://localhost:3005/auth/signup'
         })
-        .then(res => console.log(res.json()))
-    },
-    loginUser: ({ username, password }) => {
+        .then(res => {
+            console.log(res.data, res)
+            return res.data
+        })
+        .catch(err => console.log(err))
+    }
+
+export const loginUser = ({ username, password }) => {
         axios({
             method: 'POST',
             data: {
@@ -22,8 +28,9 @@ export default {
                 password: password
             },
             withCredentials: true,
-            url: 'http://localhost:3005/login'
+            url: 'http://localhost:3005/auth/login'
         })
-        .then(res => console.log(res.json()))
+        .then(res => console.log(res.data.json()))
+        .catch(err => console.log(err))
     }
-}
+

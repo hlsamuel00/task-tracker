@@ -2,6 +2,7 @@ import Task from '../models/Task.js'
 
 export default {
     getTasks: async(req,res) => {
+        console.log(req.user)
         try {
             const tasks = await Task.find({ user: req.user.id }).lean()
 

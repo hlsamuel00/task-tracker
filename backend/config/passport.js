@@ -5,10 +5,13 @@ export default function(passport){
     passport.use(
         new LocalStrategy((username, password, done) => {
             User.findOne({ username: username.toLocaleLowerCase() }, (err,user) =>{
+                console.log('here is the issue')
                 if(err){
+                    console.log("no it's right here")
                     return done(err)
                 }
                 if(!user){
+                    console.log('noooooo here it is')
                     return done(null, false, { message: `Username ${username} not found` })
                 }
                 if(!user.password){
@@ -18,9 +21,11 @@ export default function(passport){
                 }
                 user.comparePassword(password, (err,isMatch) => {
                     if(err){
+                        console.log('here')
                         return done(err)
                     }
                     if(isMatch){
+                        console.log('no here')
                         return done(null, user)
                     }
                     return done(null, false, { message: 'Invalid username or password.'})
@@ -33,6 +38,11 @@ export default function(passport){
     })
     
     passport.deserializeUser((id, done) => {
-        User.findById(id, (err, user) => done(err, user));
+        User.findById(id, (err, user) => {
+            const userInformation = {
+                username: user.username
+            }
+            done(err, userInformation)
+        });
     })
 }
