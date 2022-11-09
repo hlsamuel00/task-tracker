@@ -17,7 +17,10 @@ export const signupUser = ({ username, password, email, confirmPassword, confirm
             console.log(res.data, res)
             return res.data
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            console.log(err)
+            return err
+        })
     }
 
 export const loginUser = ({ username, password }) => {
